@@ -3,7 +3,7 @@
 A dark, animated control-room dashboard for a fictional continuous polymerisation line,
 built as a single-window WPF application.
 
-![PlantHMI](screenshots/planthmi.png)
+![PlantHMI](screenshots/PlantHMI.png)
 
 ## Stack
 
