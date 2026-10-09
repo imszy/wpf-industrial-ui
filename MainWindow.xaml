@@ -1,0 +1,643 @@
+<Window x:Class="PlantHmi.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:sp="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+        xmlns:ctrl="clr-namespace:PlantHmi.Controls"
+        Title="AURORA-7 · Plant HMI"
+        Height="920" Width="1560" MinHeight="880" MinWidth="1360"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource HmiWindowBg}"
+        FontFamily="Segoe UI"
+        TextOptions.TextFormattingMode="Ideal"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- ============================ TITLE BAR ============================ -->
+        <Border Grid.Row="0" Background="{StaticResource HmiHeaderBg}"
+                BorderBrush="{StaticResource HmiLine}" BorderThickness="0,0,0,1" Padding="16,9">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Border Width="40" Height="40" CornerRadius="10" Background="#FF0C2536"
+                            BorderBrush="{StaticResource HmiAccentDim}" BorderThickness="1.2">
+                        <materialDesign:PackIcon Kind="Factory" Width="23" Height="23"
+                                                 Foreground="{StaticResource HmiAccent}"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="AURORA-7 PROCESS PLANT" FontSize="15" FontWeight="Bold" />
+                        <TextBlock Text="Line 3 · Continuous Polymerisation Unit · IPC-1783-B"
+                                   Style="{StaticResource HmiCaption}" Margin="0,1,0,0" />
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <StackPanel Margin="10,0">
+                        <TextBlock Text="LINE STATE" Style="{StaticResource HmiCaption}" />
+                        <TextBlock x:Name="TxtLineState" Text="STOPPED" Style="{StaticResource HmiReadout}"
+                                   Foreground="{StaticResource HmiTextMuted}" />
+                    </StackPanel>
+                    <Border Style="{StaticResource HmiSeparator}" />
+                    <StackPanel Margin="10,0">
+                        <TextBlock Text="UPTIME" Style="{StaticResource HmiCaption}" />
+                        <TextBlock x:Name="TxtUptime" Text="00:00:00" Style="{StaticResource HmiReadout}" />
+                    </StackPanel>
+                    <Border Style="{StaticResource HmiSeparator}" />
+                    <StackPanel Margin="10,0">
+                        <TextBlock Text="OEE" Style="{StaticResource HmiCaption}" />
+                        <TextBlock x:Name="TxtOee" Text="0.0 %" Style="{StaticResource HmiReadout}" />
+                    </StackPanel>
+                    <Border Style="{StaticResource HmiSeparator}" />
+                    <StackPanel Margin="10,0">
+                        <TextBlock Text="SHIFT" Style="{StaticResource HmiCaption}" />
+                        <TextBlock Text="A · 06:00-14:00" Style="{StaticResource HmiReadout}" Foreground="{StaticResource HmiTextDim}" />
+                    </StackPanel>
+                </StackPanel>
+
+                <Border Grid.Column="3" Style="{StaticResource HmiSeparator}" />
+
+                <StackPanel Grid.Column="4" MinWidth="150" VerticalAlignment="Center">
+                    <TextBlock x:Name="TxtClock" Text="--:--:--" FontFamily="Consolas" FontSize="17"
+                               FontWeight="Bold" HorizontalAlignment="Right" />
+                    <TextBlock x:Name="TxtDate" Text="—" Style="{StaticResource HmiCaption}"
+                               HorizontalAlignment="Right" Margin="0,1,0,0" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ============================== BODY ============================== -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="212" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="366" />
+            </Grid.ColumnDefinitions>
+
+            <!-- ===== Nav rail ===== -->
+            <Border Grid.Column="0" Style="{StaticResource HmiPanelBorder}" Margin="10,10,4,10">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="NAVIGATION" Style="{StaticResource HmiSectionLabel}" />
+
+                    <Border DockPanel.Dock="Bottom" Margin="10,6,10,10" CornerRadius="8"
+                            Background="#FF0B1626" BorderBrush="{StaticResource HmiLine}" BorderThickness="1" Padding="10,8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Width="30" Height="30" CornerRadius="15" Background="#FF14324A">
+                                <materialDesign:PackIcon Kind="AccountHardHat" Width="17" Height="17"
+                                                         Foreground="{StaticResource HmiAccent}"
+                                                         HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="9,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="M. Okafor" FontSize="12" FontWeight="SemiBold" />
+                                <TextBlock Text="Shift A · Operator" Style="{StaticResource HmiCaption}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border DockPanel.Dock="Bottom" Height="1" Background="{StaticResource HmiLine}" Margin="10,4,10,4" />
+
+                    <StackPanel>
+                        <RadioButton Style="{StaticResource NavItem}" GroupName="Nav" IsChecked="True">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Home" Width="17" Height="17" VerticalAlignment="Center"
+                                                         Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                                <TextBlock Text="Overview" Margin="10,0,0,0" VerticalAlignment="Center"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{StaticResource NavItem}" GroupName="Nav">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ChartLine" Width="17" Height="17" VerticalAlignment="Center"
+                                                         Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                                <TextBlock Text="Trends" Margin="10,0,0,0" VerticalAlignment="Center"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{StaticResource NavItem}" GroupName="Nav">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="BellRing" Width="17" Height="17" VerticalAlignment="Center"
+                                                         Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                                <TextBlock Text="Alarms" Margin="10,0,0,0" VerticalAlignment="Center"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{StaticResource NavItem}" GroupName="Nav">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Waveform" Width="17" Height="17" VerticalAlignment="Center"
+                                                         Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                                <TextBlock Text="Diagnostics" Margin="10,0,0,0" VerticalAlignment="Center"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{StaticResource NavItem}" GroupName="Nav">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Wrench" Width="17" Height="17" VerticalAlignment="Center"
+                                                         Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                                <TextBlock Text="Maintenance" Margin="10,0,0,0" VerticalAlignment="Center"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{StaticResource NavItem}" GroupName="Nav">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ShieldCheck" Width="17" Height="17" VerticalAlignment="Center"
+                                                         Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                                <TextBlock Text="Safety" Margin="10,0,0,0" VerticalAlignment="Center"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{StaticResource NavItem}" GroupName="Nav">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Cog" Width="17" Height="17" VerticalAlignment="Center"
+                                                         Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                                <TextBlock Text="Settings" Margin="10,0,0,0" VerticalAlignment="Center"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                            </StackPanel>
+                        </RadioButton>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- ===== Main column ===== -->
+            <Grid Grid.Column="1" Margin="6,0,6,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="1.1*" MinHeight="212" />
+                    <RowDefinition Height="1*" MinHeight="186" />
+                    <RowDefinition Height="1.25*" MinHeight="238" />
+                </Grid.RowDefinitions>
+
+                <!-- control strip -->
+                <Border Grid.Row="0" Style="{StaticResource HmiCard}" Padding="14,10" Margin="0,10,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button x:Name="BtnStart" Grid.Column="0" Style="{StaticResource HmiStartButton}"
+                                Click="OnStartClick" Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Play" Width="16" Height="16" VerticalAlignment="Center" />
+                                <TextBlock Text="START LINE" Margin="8,0,0,0" FontWeight="SemiBold"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button x:Name="BtnStop" Grid.Column="1" Style="{StaticResource HmiStopButton}"
+                                Click="OnStopClick" Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Stop" Width="16" Height="16" VerticalAlignment="Center" />
+                                <TextBlock Text="STOP LINE" Margin="8,0,0,0" FontWeight="SemiBold"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                            </StackPanel>
+                        </Button>
+
+                        <Grid Grid.Column="2" Margin="6,0,0,0">
+                            <Border x:Name="AckPulse" CornerRadius="12" BorderThickness="2"
+                                    BorderBrush="{StaticResource HmiAmber}" Opacity="0" Margin="-4" />
+                            <Button x:Name="BtnAck" Style="{StaticResource HmiAckButton}" Click="OnAckClick">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="BellRing" Width="16" Height="16" VerticalAlignment="Center" />
+                                    <TextBlock Text="ACKNOWLEDGE" Margin="8,0,0,0" FontWeight="SemiBold"
+                                               Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                    <Border x:Name="AckBadge" Margin="9,0,0,0" CornerRadius="9" Background="#FFFBBF24" Padding="6,0,6,1">
+                                        <TextBlock x:Name="TxtAckBadge" Text="0" FontSize="11" FontWeight="Bold" Foreground="#FF2A1D02" />
+                                    </Border>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <Border Grid.Column="3" Style="{StaticResource HmiSeparator}" />
+
+                        <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="Alert" Width="15" Height="15" VerticalAlignment="Center"
+                                                     Foreground="{StaticResource HmiTextMuted}" />
+                            <TextBlock x:Name="TxtHint" Margin="8,0,0,0" VerticalAlignment="Center"
+                                       Foreground="{StaticResource HmiTextDim}" FontSize="12"
+                                       TextTrimming="CharacterEllipsis"
+                                       Text="Line stopped · press START LINE to energise the process train." />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="5" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border Style="{StaticResource HmiChip}" Background="#FF101B2B" BorderBrush="{StaticResource HmiLine}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="7" Height="7" Fill="{StaticResource HmiGreen}" VerticalAlignment="Center" />
+                                    <TextBlock Text="MODE AUTO" Margin="6,0,0,0" FontSize="10.5" FontWeight="SemiBold"
+                                               Foreground="{StaticResource HmiTextDim}" />
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource HmiChip}" Background="#FF101B2B" BorderBrush="{StaticResource HmiLine}" Margin="6,0,0,0">
+                                <TextBlock x:Name="TxtBatch" Text="BATCH #A7-3391" FontSize="10.5" FontWeight="SemiBold"
+                                           Foreground="{StaticResource HmiTextDim}" />
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- gauges -->
+                <UniformGrid Grid.Row="1" Columns="3" Margin="0,10,0,0">
+                    <Border Style="{StaticResource HmiCard}" Margin="0,0,5,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid Margin="14,11,12,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Thermometer" Width="16" Height="16"
+                                                             Foreground="{StaticResource HmiAccent}" VerticalAlignment="Center" />
+                                    <TextBlock Text="REACTOR TEMPERATURE" Style="{StaticResource HmiCardTitle}" Margin="8,0,0,0" />
+                                </StackPanel>
+                                <Border x:Name="ChipTemp" Style="{StaticResource HmiChip}" HorizontalAlignment="Right"
+                                        Background="#FF0E2A22" BorderBrush="{StaticResource HmiGreen}">
+                                    <TextBlock x:Name="TxtChipTemp" Text="STANDBY" FontSize="10" FontWeight="Bold"
+                                               Foreground="{StaticResource HmiGreen}" />
+                                </Border>
+                            </Grid>
+                            <ctrl:RadialGauge x:Name="GaugeTemp" Grid.Row="1" Margin="6,2,6,6" />
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource HmiCard}" Margin="5,0,5,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid Margin="14,11,12,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Gauge" Width="16" Height="16"
+                                                             Foreground="{StaticResource HmiAccent}" VerticalAlignment="Center" />
+                                    <TextBlock Text="REACTOR PRESSURE" Style="{StaticResource HmiCardTitle}" Margin="8,0,0,0" />
+                                </StackPanel>
+                                <Border x:Name="ChipPressure" Style="{StaticResource HmiChip}" HorizontalAlignment="Right"
+                                        Background="#FF0E2A22" BorderBrush="{StaticResource HmiGreen}">
+                                    <TextBlock x:Name="TxtChipPressure" Text="STANDBY" FontSize="10" FontWeight="Bold"
+                                               Foreground="{StaticResource HmiGreen}" />
+                                </Border>
+                            </Grid>
+                            <ctrl:RadialGauge x:Name="GaugePressure" Grid.Row="1" Margin="6,2,6,6" />
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource HmiCard}" Margin="5,0,0,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid Margin="14,11,12,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="ChartTimelineVariant" Width="16" Height="16"
+                                                             Foreground="{StaticResource HmiAccent}" VerticalAlignment="Center" />
+                                    <TextBlock Text="THROUGHPUT" Style="{StaticResource HmiCardTitle}" Margin="8,0,0,0" />
+                                </StackPanel>
+                                <Border x:Name="ChipThroughput" Style="{StaticResource HmiChip}" HorizontalAlignment="Right"
+                                        Background="#FF0E2A22" BorderBrush="{StaticResource HmiGreen}">
+                                    <TextBlock x:Name="TxtChipThroughput" Text="STANDBY" FontSize="10" FontWeight="Bold"
+                                               Foreground="{StaticResource HmiGreen}" />
+                                </Border>
+                            </Grid>
+                            <ctrl:RadialGauge x:Name="GaugeThroughput" Grid.Row="1" Margin="6,2,6,6" />
+                        </Grid>
+                    </Border>
+                </UniformGrid>
+
+                <!-- pipeline + lamps -->
+                <Grid Grid.Row="2" Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2.05*" />
+                        <ColumnDefinition Width="1*" MinWidth="230" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource HmiCard}" Margin="0,0,5,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid Margin="14,11,14,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Pipe" Width="16" Height="16"
+                                                             Foreground="{StaticResource HmiAccent}" VerticalAlignment="Center" />
+                                    <TextBlock Text="PROCESS PIPELINE · TRAIN 3" Style="{StaticResource HmiCardTitle}" Margin="8,0,0,0" />
+                                </StackPanel>
+                                <TextBlock x:Name="TxtFlowMode" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                           Style="{StaticResource HmiCaption}" Text="AUTO · 0.0 t/h" />
+                            </Grid>
+                            <ctrl:PipelineVisual x:Name="Pipeline" Grid.Row="1" Margin="6,2,6,8" />
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource HmiCard}" Margin="5,0,0,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" Margin="14,11,14,0">
+                                <materialDesign:PackIcon Kind="AlarmLight" Width="16" Height="16"
+                                                         Foreground="{StaticResource HmiAccent}" VerticalAlignment="Center" />
+                                <TextBlock Text="UNIT STATUS" Style="{StaticResource HmiCardTitle}" Margin="8,0,0,0" />
+                            </StackPanel>
+
+                            <ItemsControl x:Name="LampList" Grid.Row="1" Margin="14,6,14,4">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Ellipse x:Name="Dot" Width="11" Height="11" VerticalAlignment="Center"
+                                                     Fill="{Binding LampColor}" />
+                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Name}" FontSize="12" />
+                                                <TextBlock Text="{Binding Tag}" Style="{StaticResource HmiCaption}" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding StateText}" FontSize="10.5" FontWeight="Bold"
+                                                           HorizontalAlignment="Right" Foreground="{Binding LampColor}" />
+                                                <TextBlock Text="{Binding ValueText}" Style="{StaticResource HmiCaption}"
+                                                           FontFamily="Consolas" HorizontalAlignment="Right" />
+                                            </StackPanel>
+                                        </Grid>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsAlarm}" Value="True">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard x:Name="AlarmPulse">
+                                                        <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                                            <DoubleAnimation Storyboard.TargetName="Dot" Storyboard.TargetProperty="Opacity"
+                                                                             From="1" To="0.12" Duration="0:0:0.4" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                                <DataTrigger.ExitActions>
+                                                    <StopStoryboard BeginStoryboardName="AlarmPulse" />
+                                                </DataTrigger.ExitActions>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsWarning}" Value="True">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard x:Name="WarnPulse">
+                                                        <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                                            <DoubleAnimation Storyboard.TargetName="Dot" Storyboard.TargetProperty="Opacity"
+                                                                             From="1" To="0.3" Duration="0:0:0.85" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                                <DataTrigger.ExitActions>
+                                                    <StopStoryboard BeginStoryboardName="WarnPulse" />
+                                                </DataTrigger.ExitActions>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Border Grid.Row="2" Margin="14,4,14,12" CornerRadius="6" Padding="9,6"
+                                    Background="#FF0B1626" BorderBrush="{StaticResource HmiLine}" BorderThickness="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="FLOW FIC-201" Style="{StaticResource HmiCaption}" />
+                                        <TextBlock x:Name="TxtFlow" Text="0.00 x" Style="{StaticResource HmiReadout}" FontSize="13" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="FEED LEVEL" Style="{StaticResource HmiCaption}" />
+                                        <TextBlock x:Name="TxtLevel" Text="0 %" Style="{StaticResource HmiReadout}" FontSize="13" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- trend chart -->
+                <Border Grid.Row="3" Style="{StaticResource HmiCard}" Margin="0,10,0,10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid Margin="14,11,14,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ChartAreaspline" Width="16" Height="16"
+                                                         Foreground="{StaticResource HmiAccent}" VerticalAlignment="Center" />
+                                <TextBlock Text="LIVE TREND · RECENT VALUES" Style="{StaticResource HmiCardTitle}" Margin="8,0,0,0" />
+                                <TextBlock x:Name="TxtTrendWindow" Style="{StaticResource HmiCaption}" Margin="10,0,0,0"
+                                           VerticalAlignment="Center" Text="· 104 s rolling window" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Ellipse Width="9" Height="9" Fill="#FF22D3EE" VerticalAlignment="Center" />
+                                <TextBlock Text="Temperature °C" Style="{StaticResource HmiCaption}" Margin="5,0,14,0" />
+                                <Ellipse Width="9" Height="9" Fill="#FFFBBF24" VerticalAlignment="Center" />
+                                <TextBlock Text="Pressure bar" Style="{StaticResource HmiCaption}" Margin="5,0,14,0" />
+                                <Ellipse Width="9" Height="9" Fill="#FF34D399" VerticalAlignment="Center" />
+                                <TextBlock Text="Throughput t/h" Style="{StaticResource HmiCaption}" Margin="5,0,0,0" />
+                            </StackPanel>
+                        </Grid>
+                        <sp:WpfPlot x:Name="Trend" Grid.Row="1" Margin="8,2,10,6" />
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- ===== Alarm management ===== -->
+            <Border Grid.Column="2" Style="{StaticResource HmiPanelBorder}" Margin="4,10,10,10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid Margin="14,14,14,0">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="BellRing" Width="17" Height="17"
+                                                     Foreground="{StaticResource HmiAmber}" VerticalAlignment="Center" />
+                            <TextBlock Text="ALARM MANAGEMENT" FontSize="13" FontWeight="Bold" Margin="9,0,0,0" />
+                        </StackPanel>
+                        <Border HorizontalAlignment="Right" Style="{StaticResource HmiChip}"
+                                Background="#FF101B2B" BorderBrush="{StaticResource HmiLine}">
+                            <TextBlock x:Name="TxtAlarmCount" Text="0 ACTIVE" FontSize="10" FontWeight="Bold"
+                                       Foreground="{StaticResource HmiTextDim}" />
+                        </Border>
+                    </Grid>
+
+                    <UniformGrid Grid.Row="1" Columns="3" Margin="14,10,14,4">
+                        <Border CornerRadius="7" Background="#FF1B0F14" BorderBrush="#FF55202A" BorderThickness="1"
+                                Padding="9,7" Margin="0,0,4,0">
+                            <StackPanel>
+                                <TextBlock Text="CRITICAL" Style="{StaticResource HmiCaption}" />
+                                <TextBlock x:Name="TxtCritical" Text="0" FontFamily="Consolas" FontSize="19" FontWeight="Bold"
+                                           Foreground="{StaticResource HmiRed}" />
+                            </StackPanel>
+                        </Border>
+                        <Border CornerRadius="7" Background="#FF1B1608" BorderBrush="#FF55431A" BorderThickness="1"
+                                Padding="9,7" Margin="4,0,4,0">
+                            <StackPanel>
+                                <TextBlock Text="WARNING" Style="{StaticResource HmiCaption}" />
+                                <TextBlock x:Name="TxtWarning" Text="0" FontFamily="Consolas" FontSize="19" FontWeight="Bold"
+                                           Foreground="{StaticResource HmiAmber}" />
+                            </StackPanel>
+                        </Border>
+                        <Border CornerRadius="7" Background="#FF0B1A22" BorderBrush="#FF1D4A57" BorderThickness="1"
+                                Padding="9,7" Margin="4,0,0,0">
+                            <StackPanel>
+                                <TextBlock Text="UNACK" Style="{StaticResource HmiCaption}" />
+                                <TextBlock x:Name="TxtUnack" Text="0" FontFamily="Consolas" FontSize="19" FontWeight="Bold"
+                                           Foreground="{StaticResource HmiAccent}" />
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+
+                    <Grid Grid.Row="2" Margin="14,8,8,0">
+                        <ScrollViewer Style="{StaticResource HmiScroll}" Padding="0,0,6,0">
+                            <ItemsControl x:Name="AlarmList">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="0,0,0,7" CornerRadius="8" Background="#FF0D1727"
+                                                BorderBrush="{StaticResource HmiLine}" BorderThickness="1"
+                                                Opacity="{Binding RowOpacity}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="4" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Border Background="{Binding SeverityColor}" CornerRadius="8,0,0,8" />
+                                                <StackPanel Grid.Column="1" Margin="11,9,11,9">
+                                                    <Grid>
+                                                        <TextBlock Text="{Binding Message}" TextWrapping="Wrap" FontSize="12.5"
+                                                                   FontWeight="SemiBold" Margin="0,0,74,0" />
+                                                        <Border HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                                Style="{StaticResource HmiChip}" Background="#FF101B2B"
+                                                                BorderBrush="{Binding SeverityColor}">
+                                                            <TextBlock Text="{Binding SeverityText}" FontSize="9"
+                                                                       FontWeight="Bold" Foreground="{Binding SeverityColor}" />
+                                                        </Border>
+                                                    </Grid>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                                        <TextBlock Text="{Binding Detail}" Style="{StaticResource HmiCaption}" />
+                                                        <TextBlock Text="  ·  " Style="{StaticResource HmiCaption}" />
+                                                        <TextBlock Text="{Binding TimeText}" Style="{StaticResource HmiCaption}"
+                                                                   FontFamily="Consolas" />
+                                                    </StackPanel>
+                                                    <Grid Margin="0,5,0,0" Visibility="{Binding HasValues, Converter={StaticResource BoolToVis}}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="LIMIT " Style="{StaticResource HmiCaption}" />
+                                                            <TextBlock Text="{Binding LimitText}" Style="{StaticResource HmiCaption}"
+                                                                       FontFamily="Consolas" Foreground="{StaticResource HmiTextDim}" />
+                                                            <TextBlock Text="   PEAK " Style="{StaticResource HmiCaption}" />
+                                                            <TextBlock Text="{Binding PeakText}" Style="{StaticResource HmiCaption}"
+                                                                       FontFamily="Consolas" Foreground="{StaticResource HmiTextDim}" />
+                                                        </StackPanel>
+                                                        <Border HorizontalAlignment="Right" Style="{StaticResource HmiChip}"
+                                                                Background="Transparent" BorderBrush="{StaticResource HmiLine}">
+                                                            <TextBlock Text="ACK" FontSize="9" FontWeight="Bold"
+                                                                       Foreground="{StaticResource HmiTextMuted}" />
+                                                        </Border>
+                                                    </Grid>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <StackPanel x:Name="AlarmEmpty" VerticalAlignment="Top" Margin="0,26,0,0" HorizontalAlignment="Center">
+                            <materialDesign:PackIcon Kind="CheckCircle" Width="34" Height="34"
+                                                     Foreground="{StaticResource HmiGreen}" HorizontalAlignment="Center" />
+                            <TextBlock Text="No active alarms" Margin="0,8,0,0" HorizontalAlignment="Center"
+                                       Foreground="{StaticResource HmiTextDim}" />
+                            <TextBlock Text="All loops within operating envelope" Style="{StaticResource HmiCaption}"
+                                       Margin="0,3,0,0" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Grid.Row="3" Margin="14,10,14,14">
+                        <Button x:Name="BtnAckAll" Style="{StaticResource HmiAckButton}" Click="OnAckClick" HorizontalAlignment="Stretch">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <materialDesign:PackIcon Kind="CheckCircle" Width="16" Height="16" VerticalAlignment="Center" />
+                                <TextBlock Text="ACKNOWLEDGE ALL" Margin="8,0,0,0" FontWeight="SemiBold"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnSilence" Style="{StaticResource HmiActionButton}" Click="OnSilenceClick"
+                                HorizontalAlignment="Stretch" Margin="0,8,0,0">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <materialDesign:PackIcon Kind="BellRing" Width="16" Height="16" VerticalAlignment="Center" />
+                                <TextBlock Text="SILENCE HORN" Margin="8,0,0,0" FontWeight="SemiBold"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ============================ STATUS BAR ============================ -->
+        <Border Grid.Row="2" Background="#FF070D16" BorderBrush="{StaticResource HmiLine}"
+                BorderThickness="0,1,0,0" Padding="16,6">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Ellipse x:Name="LinkDot" Width="8" Height="8" Fill="{StaticResource HmiGreen}" VerticalAlignment="Center" />
+                    <TextBlock x:Name="TxtLink" Text="PLC LINK · ONLINE" Margin="7,0,0,0" FontSize="11"
+                               Foreground="{StaticResource HmiTextDim}" />
+                </StackPanel>
+
+                <TextBlock Grid.Column="1" x:Name="TxtScan" Text="SCAN 41 ms" Margin="18,0,0,0" FontSize="11"
+                           FontFamily="Consolas" Foreground="{StaticResource HmiTextMuted}" VerticalAlignment="Center" />
+
+                <TextBlock Grid.Column="2" x:Name="TxtFrames" Text="FRAMES 0" Margin="18,0,0,0" FontSize="11"
+                           FontFamily="Consolas" Foreground="{StaticResource HmiTextMuted}" VerticalAlignment="Center" />
+
+                <TextBlock Grid.Column="3" x:Name="TxtTicker" Margin="24,0,0,0" FontSize="11" VerticalAlignment="Center"
+                           Foreground="{StaticResource HmiTextDim}" TextTrimming="CharacterEllipsis"
+                           Text="System ready — historian connected, alarm horn silent." />
+
+                <TextBlock Grid.Column="4" Text="AURORA-7 HMI v1.4.2 · BUILD 20261009" FontSize="11"
+                           FontFamily="Consolas" Foreground="{StaticResource HmiTextMuted}" VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

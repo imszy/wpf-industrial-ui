@@ -1,0 +1,266 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <!-- ============================================================
+         AURORA-7 Industrial HMI · hand-built dark theme layer
+         (sits on top of MaterialDesignThemes' BundledTheme dark base)
+         ============================================================ -->
+
+    <!-- Palette -->
+    <Color x:Key="C_Bg">#FF05080E</Color>
+    <Color x:Key="C_Panel">#FF0B1220</Color>
+    <Color x:Key="C_PanelHi">#FF111C2E</Color>
+    <Color x:Key="C_Line">#FF1E2C42</Color>
+    <Color x:Key="C_Accent">#FF22D3EE</Color>
+    <Color x:Key="C_AccentDim">#FF0E7490</Color>
+    <Color x:Key="C_Amber">#FFFBBF24</Color>
+    <Color x:Key="C_Green">#FF34D399</Color>
+    <Color x:Key="C_Red">#FFF87171</Color>
+    <Color x:Key="C_Text">#FFE6EDF7</Color>
+    <Color x:Key="C_TextDim">#FF93A4BF</Color>
+    <Color x:Key="C_TextMuted">#FF5C6E8A</Color>
+
+    <SolidColorBrush x:Key="HmiBg" Color="{StaticResource C_Bg}" />
+    <SolidColorBrush x:Key="HmiPanel" Color="{StaticResource C_Panel}" />
+    <SolidColorBrush x:Key="HmiPanelHi" Color="{StaticResource C_PanelHi}" />
+    <SolidColorBrush x:Key="HmiLine" Color="{StaticResource C_Line}" />
+    <SolidColorBrush x:Key="HmiAccent" Color="{StaticResource C_Accent}" />
+    <SolidColorBrush x:Key="HmiAccentDim" Color="{StaticResource C_AccentDim}" />
+    <SolidColorBrush x:Key="HmiAmber" Color="{StaticResource C_Amber}" />
+    <SolidColorBrush x:Key="HmiGreen" Color="{StaticResource C_Green}" />
+    <SolidColorBrush x:Key="HmiRed" Color="{StaticResource C_Red}" />
+    <SolidColorBrush x:Key="HmiText" Color="{StaticResource C_Text}" />
+    <SolidColorBrush x:Key="HmiTextDim" Color="{StaticResource C_TextDim}" />
+    <SolidColorBrush x:Key="HmiTextMuted" Color="{StaticResource C_TextMuted}" />
+
+    <LinearGradientBrush x:Key="HmiWindowBg" StartPoint="0,0" EndPoint="0.6,1">
+        <GradientStop Color="#FF060A11" Offset="0" />
+        <GradientStop Color="#FF0A1120" Offset="0.55" />
+        <GradientStop Color="#FF05080E" Offset="1" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="HmiPanelBg" StartPoint="0,0" EndPoint="0.35,1">
+        <GradientStop Color="#FF101A2B" Offset="0" />
+        <GradientStop Color="#FF0A1220" Offset="1" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="HmiCardBg" StartPoint="0,0" EndPoint="0.25,1">
+        <GradientStop Color="#FF0F1A2B" Offset="0" />
+        <GradientStop Color="#FF0A111E" Offset="1" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="HmiHeaderBg" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FF0E1A2C" Offset="0" />
+        <GradientStop Color="#FF0A1322" Offset="0.7" />
+        <GradientStop Color="#FF0C1728" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- ===================== Text ===================== -->
+
+    <Style TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource HmiText}" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+    </Style>
+
+    <Style x:Key="HmiCardTitle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource HmiTextDim}" />
+        <Setter Property="FontSize" Value="11.5" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="HmiSectionLabel" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource HmiTextMuted}" />
+        <Setter Property="FontSize" Value="10.5" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Margin" Value="16,14,16,6" />
+    </Style>
+
+    <Style x:Key="HmiReadout" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="Foreground" Value="{StaticResource HmiText}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style x:Key="HmiCaption" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource HmiTextMuted}" />
+        <Setter Property="FontSize" Value="10.5" />
+    </Style>
+
+    <!-- ===================== Surfaces ===================== -->
+
+    <Style x:Key="HmiCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource HmiCardBg}" />
+        <Setter Property="BorderBrush" Value="{StaticResource HmiLine}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="18" ShadowDepth="0" Color="#FF000000" Opacity="0.55" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="HmiPanelBorder" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource HmiPanelBg}" />
+        <Setter Property="BorderBrush" Value="{StaticResource HmiLine}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+    </Style>
+
+    <Style x:Key="HmiChip" TargetType="Border">
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="7,2,7,3" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- ===================== Nav rail ===================== -->
+
+    <Style x:Key="NavItem" TargetType="RadioButton">
+        <Setter Property="Height" Value="42" />
+        <Setter Property="Margin" Value="8,2,8,2" />
+        <Setter Property="Foreground" Value="{StaticResource HmiTextDim}" />
+        <Setter Property="FontSize" Value="12.5" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Grid>
+                        <Border x:Name="Bg" CornerRadius="8" Background="Transparent" />
+                        <Border x:Name="AccentBar" Width="3" Height="18" CornerRadius="2"
+                                HorizontalAlignment="Left" Background="{StaticResource HmiAccent}" Opacity="0" />
+                        <ContentPresenter Margin="16,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bg" Property="Background" Value="#FF132135" />
+                            <Setter Property="Foreground" Value="{StaticResource HmiText}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Bg" Property="Background" Value="#FF10293C" />
+                            <Setter TargetName="AccentBar" Property="Opacity" Value="1" />
+                            <Setter Property="Foreground" Value="{StaticResource HmiAccent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===================== Action buttons ===================== -->
+
+    <ControlTemplate x:Key="HmiActionButtonTemplate" TargetType="Button">
+        <Grid RenderTransformOrigin="0.5,0.5" x:Name="Root">
+            <Grid.RenderTransform>
+                <ScaleTransform x:Name="RootScale" ScaleX="1" ScaleY="1" />
+            </Grid.RenderTransform>
+            <Border x:Name="Glow" CornerRadius="9" Background="{TemplateBinding BorderBrush}" Opacity="0">
+                <Border.Effect>
+                    <BlurEffect Radius="16" />
+                </Border.Effect>
+            </Border>
+            <Border x:Name="Shell" CornerRadius="9" BorderThickness="1.2"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}">
+                <ContentPresenter Margin="{TemplateBinding Padding}"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleX" To="1.045" Duration="0:0:0.13" />
+                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleY" To="1.045" Duration="0:0:0.13" />
+                            <DoubleAnimation Storyboard.TargetName="Glow" Storyboard.TargetProperty="Opacity" To="0.5" Duration="0:0:0.13" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.22" />
+                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.22" />
+                            <DoubleAnimation Storyboard.TargetName="Glow" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.28" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleX" To="0.96" Duration="0:0:0.07" />
+                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleY" To="0.96" Duration="0:0:0.07" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.14" />
+                            <DoubleAnimation Storyboard.TargetName="RootScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.14" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Shell" Property="Opacity" Value="0.32" />
+                <Setter TargetName="Glow" Property="Opacity" Value="0" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="HmiActionButton" TargetType="Button">
+        <Setter Property="Template" Value="{StaticResource HmiActionButtonTemplate}" />
+        <Setter Property="Padding" Value="18,10" />
+        <Setter Property="FontSize" Value="12.5" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource HmiText}" />
+        <Setter Property="Background" Value="#FF132033" />
+        <Setter Property="BorderBrush" Value="#FF2C425F" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    </Style>
+
+    <Style x:Key="HmiStartButton" TargetType="Button" BasedOn="{StaticResource HmiActionButton}">
+        <Setter Property="Background" Value="#FF0C2E24" />
+        <Setter Property="BorderBrush" Value="{StaticResource HmiGreen}" />
+        <Setter Property="Foreground" Value="#FFB9F5DC" />
+    </Style>
+
+    <Style x:Key="HmiStopButton" TargetType="Button" BasedOn="{StaticResource HmiActionButton}">
+        <Setter Property="Background" Value="#FF341219" />
+        <Setter Property="BorderBrush" Value="{StaticResource HmiRed}" />
+        <Setter Property="Foreground" Value="#FFFFD3D3" />
+    </Style>
+
+    <Style x:Key="HmiAckButton" TargetType="Button" BasedOn="{StaticResource HmiActionButton}">
+        <Setter Property="Background" Value="#FF33260A" />
+        <Setter Property="BorderBrush" Value="{StaticResource HmiAmber}" />
+        <Setter Property="Foreground" Value="#FFFFE6AE" />
+    </Style>
+
+    <!-- ===================== Misc ===================== -->
+
+    <Style x:Key="HmiSeparator" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource HmiLine}" />
+        <Setter Property="Width" Value="1" />
+        <Setter Property="Margin" Value="10,8,10,8" />
+    </Style>
+
+    <Style x:Key="HmiScroll" TargetType="ScrollViewer">
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+</ResourceDictionary>
